@@ -57,7 +57,6 @@ unsigned char ADS1256::readRegister(unsigned char reg) {
 
 void ADS1256::sendCommand(unsigned char reg) {
   CSON();
-  waitDRDY();
   SPI.transfer(reg);
   delayMicroseconds(1);              //  t11 delay (4*tCLKIN 4*0.13 = 0.52 us)    
   CSOFF();
@@ -205,6 +204,7 @@ void ADS1256::setChannel(byte AIN_P, byte AIN_N) {
   CSON();
   writeRegister(ADS1256_RADD_MUX, MUX_CHANNEL);
   sendCommand(ADS1256_CMD_SYNC);
+  delayMicroseconds(3);  // t11 for SYNC is longer (pg 6)
   sendCommand(ADS1256_CMD_WAKEUP);
   CSOFF();
 }
@@ -263,7 +263,8 @@ void ADS1256::CSOFF() {
 
 void ADS1256::waitDRDY() {
   //while (PIN_DRDY & (1 << PINDEX_DRDY));
-  while (digitalRead(pinDRDY));
+  while (digitalRead(pinDRDY))
+    yield();
 }
 
 boolean ADS1256::isDRDY() {
