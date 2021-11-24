@@ -213,13 +213,9 @@ void ADS1256::setChannel(byte AIN_P, byte AIN_N) {
 Init chip with set datarate and gain and perform self calibration
 */ 
 void ADS1256::begin(unsigned char drate, unsigned char gain, bool buffenable) {
-  _pga = 1 << gain;
   sendCommand(ADS1256_CMD_SDATAC);  // send out ADS1256_CMD_SDATAC command to stop continous reading mode.
   writeRegister(ADS1256_RADD_DRATE, drate);  // write data rate register   
-  uint8_t bytemask = B00000111;
-  uint8_t adcon = readRegister(ADS1256_RADD_ADCON);
-  uint8_t byte2send = (adcon & ~bytemask) | gain;
-  writeRegister(ADS1256_RADD_ADCON, byte2send);
+  setGain(gain);
   if (buffenable) {  
     uint8_t status = readRegister(ADS1256_RADD_STATUS);   
     bitSet(status, 1); 
@@ -249,6 +245,17 @@ uint8_t ADS1256::getStatus() {
   return readRegister(ADS1256_RADD_STATUS); 
 }
 
+/*
+Set gain 0..7 in ADCON register
+*/ 
+void ADS1256::setGain(uint8_t gain) {
+  if( gain > 7 ) return;
+  uint8_t bytemask = B00000111;
+  uint8_t adcon = readRegister(ADS1256_RADD_ADCON);
+  uint8_t byte2send = (adcon & ~bytemask) | gain;
+  writeRegister(ADS1256_RADD_ADCON, byte2send);
+  _pga = 1 << gain;
+}
 
 
 void ADS1256::CSON() {
