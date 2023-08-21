@@ -26,11 +26,6 @@ ADS1256::ADS1256(float clockspdMhz, float vref, bool useResetPin) {
 
   // Default conversion factor
   _conversionFactor = 1.0;
-
-  // Start SPI on a quarter of ADC clock speed
-  SPI.begin();
-  SPI.beginTransaction(
-      SPISettings(clockspdMhz * 1000000 / 4, MSBFIRST, SPI_MODE1));
 }
 
 void ADS1256::writeRegister(unsigned char reg, unsigned char wdata) {
