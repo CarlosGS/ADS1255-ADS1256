@@ -22,6 +22,11 @@ void setup()
   
   Serial.println("Starting ADC");
 
+  // Start SPI on a quarter of ADC clock speed
+  SPI.begin();
+  SPI.beginTransaction(
+      SPISettings(clockspdMhz * 1000000 / 4, MSBFIRST, SPI_MODE1));
+
   // start the ADS1256 with data rate of 15 SPS and gain x1
   adc.begin(ADS1256_DRATE_15SPS,ADS1256_GAIN_1,false); 
     
