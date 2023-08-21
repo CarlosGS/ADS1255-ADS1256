@@ -26,7 +26,7 @@
     #define pinRST  D1
     #define pinCS   D8 // D8 Hw Cs in esp8266
 
-#elif   defined(ARDUINO_ARCH_ESP32)
+#elif   defined(ARDUINO_ARCH_ESP32) || defined(ESP32)
 	// Contributions are welcome
     //https://circuits4you.com/wp-content/uploads/2018/12/ESP32-Pinout.jpg
     #define pinDRDY 17
